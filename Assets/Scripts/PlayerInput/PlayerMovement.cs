@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     // vector responsible for moving the player - add velocity to the vector direction
     private Vector2 MoveVector = Vector2.zero;
 
-    private float MoveSpeed = 7.0f;
+    private float MoveSpeed = 200.0f;
 
 
 
@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed, Rigidbody2DComponent.velocity.y);
+        Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
     }
 
     public void OnMovement(InputAction.CallbackContext context)
