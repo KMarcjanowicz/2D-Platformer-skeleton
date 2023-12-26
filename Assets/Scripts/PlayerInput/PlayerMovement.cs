@@ -7,8 +7,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 
 public class PlayerMovement : MonoBehaviour
-{                        
-    // RigidBody2D component - responsible for physics for th eplayer object
+{
+    //animator variable for changing in-component variables
+    [SerializeField] private Animator Anim = null;
+
+    // RigidBody2D component - responsible for physics for the player object
     [SerializeField] private Rigidbody2D Rigidbody2DComponent = null;
 
     // A mask determining what is ground to the character
@@ -52,6 +55,13 @@ public class PlayerMovement : MonoBehaviour
     private bool IsJumping = false;
     private bool WantsToJump = false;
 
+    private enum MovementState
+    {
+        Idle,
+        Running,
+        Jumping,
+        Falling
+    };
 
     private void Start()
     {
@@ -82,8 +92,6 @@ public class PlayerMovement : MonoBehaviour
         else{
             if(IsGrounded)
             {
-                Debug.Log(Physics2D.OverlapCircle(CeilingCheck.position, .5f, WhatIsGround));
-
                 // The player must crouch if a circlecast to the ceilingcheck position hits anything designated as ground
                 // This can be done using layers instead but Sample Assets will not overwrite your project settings.
                 // If the character has a ceiling preventing them from standing up, keep them crouching
@@ -120,6 +128,8 @@ public class PlayerMovement : MonoBehaviour
                 Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
             }
         }
+
+        UpdateAnimationState();
     }
 
     public void OnMovement(InputAction.CallbackContext context)
@@ -138,7 +148,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 Flip();
             }
-            
         }
         // if key is cancelled remove movement vector ( prevents infinite sliding )
         else if(context.canceled)
@@ -207,5 +216,37 @@ public class PlayerMovement : MonoBehaviour
         Vector3 TheScale = transform.localScale;
         TheScale.x *= -1;
         transform.localScale = TheScale;
+    }
+
+
+
+    private void UpdateAnimationState()
+    {
+        MovementState Movement = MovementState.Idle;
+
+
+
+        if(Rigidbody2DComponent.velocity.x > .1f)
+        {
+            Movement = MovementState.Running;
+        }
+        else if(Rigidbody2DComponent.velocity.x < -.1f)
+        {
+            Movement = MovementState.Running;
+        }
+        else
+        {
+            Movement = MovementState.Idle;
+        }
+
+        if(Rigidbody2DComponent.velocity.y > .1f)
+        {
+            Movement = MovementState.Jumping;
+        }
+        else if(Rigidbody2DComponent.velocity.y < -.1f)
+        {
+            Movement = MovementState.Falling;
+        }
+        Anim.SetInteger("state", (int)Movement);
     }
 }
