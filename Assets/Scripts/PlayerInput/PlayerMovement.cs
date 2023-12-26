@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     //animator variable for changing in-component variables
     [SerializeField] private Animator Anim = null;
 
-    // RigidBody2D component - responsible for physics for th eplayer object
+    // RigidBody2D component - responsible for physics for the player object
     [SerializeField] private Rigidbody2D Rigidbody2DComponent = null;
 
     // A mask determining what is ground to the character
@@ -55,6 +55,13 @@ public class PlayerMovement : MonoBehaviour
     private bool IsJumping = false;
     private bool WantsToJump = false;
 
+    private enum MovementState
+    {
+        Idle,
+        Running,
+        Jumping,
+        Falling
+    };
 
     private void Start()
     {
@@ -121,6 +128,8 @@ public class PlayerMovement : MonoBehaviour
                 Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
             }
         }
+
+        UpdateAnimationState();
     }
 
     public void OnMovement(InputAction.CallbackContext context)
@@ -139,13 +148,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 Flip();
             }
-            UpdateAnimationState("running", true);
         }
         // if key is cancelled remove movement vector ( prevents infinite sliding )
         else if(context.canceled)
         {
             MoveVector = Vector2.zero;
-            UpdateAnimationState("running", false);
         }
         else
         {
@@ -213,13 +220,33 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    private void UpdateAnimationState(String id, bool value)
+    private void UpdateAnimationState()
     {
-        Anim.SetBool(id, value);
-    }
+        MovementState Movement = MovementState.Idle;
 
-    private void UpdateAnimationState(String id, float value)
-    {
-        Anim.SetFloat(id, value);
+
+
+        if(Rigidbody2DComponent.velocity.x > .1f)
+        {
+            Movement = MovementState.Running;
+        }
+        else if(Rigidbody2DComponent.velocity.x < -.1f)
+        {
+            Movement = MovementState.Running;
+        }
+        else
+        {
+            Movement = MovementState.Idle;
+        }
+
+        if(Rigidbody2DComponent.velocity.y > .1f)
+        {
+            Movement = MovementState.Jumping;
+        }
+        else if(Rigidbody2DComponent.velocity.y < -.1f)
+        {
+            Movement = MovementState.Falling;
+        }
+        Anim.SetInteger("state", (int)Movement);
     }
 }
