@@ -7,7 +7,10 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 
 public class PlayerMovement : MonoBehaviour
-{                        
+{
+    //animator variable for changing in-component variables
+    [SerializeField] private Animator Anim = null;
+
     // RigidBody2D component - responsible for physics for th eplayer object
     [SerializeField] private Rigidbody2D Rigidbody2DComponent = null;
 
@@ -82,8 +85,6 @@ public class PlayerMovement : MonoBehaviour
         else{
             if(IsGrounded)
             {
-                Debug.Log(Physics2D.OverlapCircle(CeilingCheck.position, .5f, WhatIsGround));
-
                 // The player must crouch if a circlecast to the ceilingcheck position hits anything designated as ground
                 // This can be done using layers instead but Sample Assets will not overwrite your project settings.
                 // If the character has a ceiling preventing them from standing up, keep them crouching
@@ -138,12 +139,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 Flip();
             }
-            
+            UpdateAnimationState("running", true);
         }
         // if key is cancelled remove movement vector ( prevents infinite sliding )
         else if(context.canceled)
         {
             MoveVector = Vector2.zero;
+            UpdateAnimationState("running", false);
         }
         else
         {
@@ -207,5 +209,17 @@ public class PlayerMovement : MonoBehaviour
         Vector3 TheScale = transform.localScale;
         TheScale.x *= -1;
         transform.localScale = TheScale;
+    }
+
+
+
+    private void UpdateAnimationState(String id, bool value)
+    {
+        Anim.SetBool(id, value);
+    }
+
+    private void UpdateAnimationState(String id, float value)
+    {
+        Anim.SetFloat(id, value);
     }
 }
