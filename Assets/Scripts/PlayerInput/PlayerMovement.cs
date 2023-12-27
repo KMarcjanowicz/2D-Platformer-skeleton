@@ -115,7 +115,8 @@ public class PlayerMovement : MonoBehaviour
                     CrouchDisableCollider.enabled = false;
                 }
                 // Move speed while crouching
-                Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * CrouchSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
+                if (Rigidbody2DComponent.bodyType != RigidbodyType2D.Static) //if not dead
+                    Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * CrouchSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
             }
             else
             {
@@ -125,7 +126,8 @@ public class PlayerMovement : MonoBehaviour
                     CrouchDisableCollider.enabled = true;
                 }
                 //Move speed while normal moving
-                Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
+                if(Rigidbody2DComponent.bodyType != RigidbodyType2D.Static) //if not dead
+                    Rigidbody2DComponent.velocity = new Vector2(MoveVector.x * MoveSpeed * Time.fixedDeltaTime, Rigidbody2DComponent.velocity.y);
             }
         }
 
