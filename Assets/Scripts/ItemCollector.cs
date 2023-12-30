@@ -5,8 +5,21 @@ using UnityEngine;
 
 public class ItemCollector : MonoBehaviour
 {
+    [Header("Collected iterator")]
+    [Space]
+
     [SerializeField] public int CollectedItems = 0;
-    [SerializeField] TextMeshProUGUI Label = null;
+
+    [Header("GameObject variables")]
+    [Space]
+
+    [SerializeField] private TextMeshProUGUI Label = null;
+
+    [Header("Audio")]
+    [Space]
+
+    [SerializeField] private AudioSource CollectAudio = null;
+
     // onTrigger collision for pickable objects?
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -14,6 +27,13 @@ public class ItemCollector : MonoBehaviour
         {
             CollectedItems++;
             Label.text = CollectedItems.ToString();
+
+
+            if (CollectAudio != null )
+            {
+                CollectAudio.Play();
+            }
+
             Destroy(collision.gameObject);
         }
     }

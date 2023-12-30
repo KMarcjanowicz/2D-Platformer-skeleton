@@ -8,6 +8,9 @@ using UnityEngine.InputSystem.EnhancedTouch;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("GameObject Components")]
+    [Space]
+
     //animator variable for changing in-component variables
     [SerializeField] private Animator Anim = null;
 
@@ -25,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
 
     // A collider that will be disabled when crouching
     [SerializeField] private Collider2D CrouchDisableCollider = null;
+
+    [Header("Movement variables")]
+    [Space]
 
     // Amount of maxSpeed applied to crouching movement. 1 = 100%
     [Range(0, 1)][SerializeField] private float CrouchSpeed = .36f;
@@ -54,6 +60,12 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsJumping = false;
     private bool WantsToJump = false;
+
+    [Header("Audio")]
+    [Space]
+
+    //Audio sources
+    [SerializeField] private AudioSource JumpAudio = null;
 
     private enum MovementState
     {
@@ -173,6 +185,11 @@ public class PlayerMovement : MonoBehaviour
             Rigidbody2DComponent.velocity = new Vector2(Rigidbody2DComponent.velocity.x, JumpForce);
             IsInAir = true;
             IsGrounded = false;
+            if(JumpAudio != null)
+            {
+                Debug.Log(JumpAudio);
+                JumpAudio.Play();
+            }
         }
         
     }
