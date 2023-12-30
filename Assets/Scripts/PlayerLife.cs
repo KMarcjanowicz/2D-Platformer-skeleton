@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerLife : MonoBehaviour
 {
+    [SerializeField] private AudioSource DeathAudio = null;
     private Rigidbody2D RB2D = null;
     private Animator Anim = null;
     private bool alive = true;
@@ -26,8 +27,13 @@ public class PlayerLife : MonoBehaviour
     private void Die() {
         RB2D.bodyType = RigidbodyType2D.Static;
         Anim.SetTrigger("death");   
+        if(DeathAudio != null)
+        {
+            DeathAudio.Play();
+        }
     }
 
+    //used in animation
     private void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
