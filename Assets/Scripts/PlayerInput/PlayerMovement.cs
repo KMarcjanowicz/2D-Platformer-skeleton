@@ -72,7 +72,8 @@ public class PlayerMovement : MonoBehaviour
         Idle,
         Running,
         Jumping,
-        Falling
+        Falling,
+        Crouching
     };
 
     private void Start()
@@ -91,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
             if (groundColliders[i].gameObject != gameObject)
             {
                 IsGrounded = true;
+                IsInAir = false;
             }
         }
 
@@ -258,7 +260,12 @@ public class PlayerMovement : MonoBehaviour
             Movement = MovementState.Idle;
         }
 
-        if(Rigidbody2DComponent.velocity.y > .1f)
+        if (IsCrouching)
+        {
+            Movement = MovementState.Crouching;
+        }
+
+        if (Rigidbody2DComponent.velocity.y > .1f)
         {
             Movement = MovementState.Jumping;
         }
@@ -266,6 +273,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Movement = MovementState.Falling;
         }
+
         Anim.SetInteger("state", (int)Movement);
     }
 }
